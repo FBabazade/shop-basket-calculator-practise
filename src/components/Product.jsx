@@ -1,6 +1,7 @@
 import React from "react";
+import { moneyFormat } from "./Helper";
 
-function Products({ product, basket, setBasket }) {
+function Products({ product, basket, setBasket, total, money }) {
   const basketItem = basket.find((item) => item.id === product.id);
   const addBasket = () => {
     const checkBasket = basket.find((item) => item.id === product.id);
@@ -21,13 +22,15 @@ function Products({ product, basket, setBasket }) {
     }
   };
   const removeBasket = () => {
-    const currentBasket= basket.find(item=>item.id === product.id)
-    const basketWithoutCurrent= basket.filter(item=>item.id !==product.id)
-    currentBasket.amount-=1
-    if(currentBasket.amount===0){
-      setBasket([...basketWithoutCurrent])
-    }else{
-      setBasket([...basketWithoutCurrent, currentBasket])
+    const currentBasket = basket.find((item) => item.id === product.id);
+    const basketWithoutCurrent = basket.filter(
+      (item) => item.id !== product.id
+    );
+    currentBasket.amount -= 1;
+    if (currentBasket.amount === 0) {
+      setBasket([...basketWithoutCurrent]);
+    } else {
+      setBasket([...basketWithoutCurrent, currentBasket]);
     }
   };
 
@@ -35,7 +38,7 @@ function Products({ product, basket, setBasket }) {
     <>
       <div className="product">
         <h6>{product.title}</h6>
-        <div className="price">$ {product.price}</div>
+        <div className="price">$ {moneyFormat(product.price)}</div>
         <div className="actions">
           <button disabled={!basketItem} onClick={removeBasket}>
             sil
@@ -43,7 +46,9 @@ function Products({ product, basket, setBasket }) {
           <span className="amount">
             {(basketItem && basketItem.amount) || 0}
           </span>
-          <button onClick={addBasket}>Satin al</button>
+          <button disabled={total + product.price > money} onClick={addBasket}>
+            Satin al
+          </button>
         </div>
         <style jsx>{`
           .product {
